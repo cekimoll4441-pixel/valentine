@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mənim Sevgilim Olarsan?</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fce4ec;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            color: #d32f2f;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        #cat-container {
+            width: 300px;
+            height: 300px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #cat-container img {
+            width: 100%;
+            border-radius: 15px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            height: 100px;
+        }
+
+        /* Yaşıl düymə */
+        .yes-button {
+            font-size: 1.6rem;
+            padding: 12px 30px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px #2e7d32;
+        }
+
+        /* Qırmızı düymə */
+        .no-button {
+            font-size: 1.6rem;
+            padding: 12px 30px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 id="title">Mənim Sevgilim Olarsan?</h1>
+        
+        <div id="cat-container">
+            <img id="main-cat" src="https://media.tenor.com/w9N9qfM_P4AAAAAi/cute-cat.gif" alt="Pişik">
+        </div>
+
+        <div class="buttons">
+            <button class="yes-button" onclick="happyEnd()">Bəli</button>
+            <button id="no-btn" class="no-button" onmouseover="escape()">Xeyr</button>
+        </div>
+    </div>
+
+    <script>
+        function escape() {
+            const btn = document.getElementById('no-btn');
+            // Ekranın ölçüsünə görə təsadüfi yer seçirik
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            
+            btn.style.position = 'absolute';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+            btn.innerText = "Dəqiq??"; // Yazı dəyişir
+        }
+
+        function happyEnd() {
+            const cat = document.getElementById('main-cat');
+            const title = document.getElementById('title');
+            const buttons = document.querySelector('.buttons');
+
+            // Bəli vuranda sevinən pişik
+            cat.src = "https://media.tenor.com/9lS4K7wL8iUAAAAAi/cute-cat-love.gif";
+            
+            title.innerText = "Uraaa! ❤️ Mən də səni sevirəm!";
+            buttons.style.display = 'none'; // Düymələri gizlət
+        }
+    </script>
+
+</body>
+</html>
