@@ -3,105 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sürət Testi Oyunu</title>
+    <title>Sürpriz Təklif</title>
     <style>
+        /* CSS Hissəsi - Görünüş */
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f0f2f5;
             margin: 0;
-            overflow: hidden;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffffff; /* Ağ fon */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Düymənin ekrandan kənara çıxmaması üçün */
         }
-        #game-container {
-            width: 100vw;
-            height: 80vh;
-            position: relative;
+
+        .container {
+            text-align: center;
         }
-        #target {
-            width: 50px;
-            height: 50px;
-            background-color: #ff4757;
-            border-radius: 50%;
-            position: absolute;
-            display: none;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+
+        h1 {
+            color: #b32d2d; /* Şəkildəki tünd qırmızı rəng */
+            font-size: 2.5rem;
+            margin-bottom: 40px;
         }
-        #stats {
-            padding: 20px;
-            background: #2f3542;
-            color: white;
-            font-size: 20px;
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
         }
+
         button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #2ed573;
-            color: white;
+            padding: 10px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
             border: none;
-            border-radius: 5px;
-            margin-top: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        /* Yaşıl Bəli düyməsi */
+        #yesBtn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Qırmızı Xeyr düyməsi */
+        #noBtn {
+            background-color: #f44336;
+            color: white;
+            position: absolute; /* Qaçması üçün vacibdir */
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
 
-    <div id="stats">
-        Xal: <span id="score">0</span> | Rekord: <span id="high-score">0</span>
-        <br>
-        <button onclick="startGame()" id="start-btn">Oyuna Başla</button>
-    </div>
-
-    <div id="game-container">
-        <div id="target" onclick="hitTarget()"></div>
+    <div class="container">
+        <h1>Mənim Sevgilim Olarsan?</h1>
+        <div class="buttons">
+            <button id="yesBtn">Bəli</button>
+            <button id="noBtn">Xeyr</button>
+        </div>
     </div>
 
     <script>
-        let score = 0;
-        let highScore = 0;
-        let startTime;
-        const target = document.getElementById('target');
-        const scoreDisplay = document.getElementById('score');
-        const highScoreDisplay = document.getElementById('high-score');
-        const startBtn = document.getElementById('start-btn');
+        /* JavaScript Hissəsi - Hərəkət */
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
 
-        function startGame() {
-            score = 0;
-            scoreDisplay.innerText = score;
-            startBtn.style.display = 'none';
-            moveTarget();
-        }
-
-        function moveTarget() {
-            const container = document.getElementById('game-container');
-            const maxX = container.clientWidth - 50;
-            const maxY = container.clientHeight - 50;
-
-            const randomX = Math.floor(Math.random() * maxX);
-            const randomY = Math.floor(Math.random() * maxY);
-
-            target.style.left = randomX + 'px';
-            target.style.top = randomY + 'px';
-            target.style.display = 'block';
+        // "Xeyr" düyməsinin üzərinə gələndə qaçması
+        noBtn.addEventListener('mouseover', () => {
+            // Ekranın ölçülərinə görə təsadüfi yer seçirik
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
             
-            startTime = new Date().getTime();
-        }
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        });
 
-        function hitTarget() {
-            score++;
-            scoreDisplay.innerText = score;
-            
-            if (score > highScore) {
-                highScore = score;
-                highScoreDisplay.innerText = highScore;
-            }
-
-            target.style.display = 'none';
-            
-            // Hər klikdən sonra növbəti hədəf bir az daha tez və ya gec gəlsin (təsadüfi)
-            setTimeout(moveTarget, Math.random() * 500 + 200);
-        }
+        // "Bəli" düyməsinə basıldıqda mesaj çıxması
+        yesBtn.addEventListener('click', () => {
+            alert('Təbriklər! Artıq sevgilisiniz! ❤️');
+            // İstəsən bura bir konfeti effekti və ya musiqi də əlavə edə bilərik
+        });
     </script>
+
 </body>
 </html>
