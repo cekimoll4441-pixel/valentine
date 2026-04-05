@@ -2,297 +2,159 @@
 <html lang="az">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Birthday Experience | Milana</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@100;300;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Milana | Firework Show</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@100;400&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --gold: #e6b800;
-            --gold-light: #fff3b0;
-            --dark-bg: #030303;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border-glass: rgba(255, 255, 255, 0.1);
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Montserrat', sans-serif; 
+            overflow: hidden; 
+            height: 100vh;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
-
-        body, html {
-            width: 100%; height: 100%;
-            background: var(--dark-bg);
-            color: white;
-            font-family: 'Montserrat', sans-serif;
-            overflow: hidden;
+        /* Başlanğıc Ekranı */
+        #gate {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 1000; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
         }
 
-        /* Xüsusi Mouse Cursor */
-        #cursor {
-            position: fixed; width: 20px; height: 20px;
-            border: 1px solid var(--gold); border-radius: 50%;
-            pointer-events: none; z-index: 9999;
-            transition: transform 0.1s;
+        .start-btn {
+            background: none; border: 1px solid #d4af37; color: #d4af37;
+            padding: 20px 60px; font-family: 'Cinzel'; letter-spacing: 5px;
+            cursor: pointer; transition: 0.5s; font-size: 1.2rem;
         }
 
-        /* Arxa Fon Animasiyası (Starfield) */
-        #bg-canvas {
-            position: fixed; top: 0; left: 0; z-index: 0;
+        .start-btn:hover { background: #d4af37; color: #000; box-shadow: 0 0 50px #d4af37; }
+
+        /* Əsas Səhnə */
+        #canvas { position: fixed; top: 0; left: 0; z-index: 1; }
+
+        .ui-layer {
+            position: relative; z-index: 10; height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            pointer-events: none; text-align: center;
         }
 
-        .main-wrapper {
-            position: relative; z-index: 10;
-            width: 100%; height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        /* Giriş Kartı - Glassmorphism */
-        .premium-card {
-            width: 90%; max-width: 800px;
-            padding: 60px;
-            background: var(--glass);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--border-glass);
-            border-radius: 2px; /* Düz künclər daha lüks görünür */
-            text-align: center;
-            position: relative;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
-            transform: perspective(1000px);
-        }
-
-        .gold-border-top {
-            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-            width: 100px; height: 2px; background: var(--gold);
-        }
-
-        .top-label {
+        .name-3d {
             font-family: 'Cinzel', serif;
-            letter-spacing: 8px; font-size: 10px;
-            color: var(--gold); margin-bottom: 30px;
-            text-transform: uppercase; display: block;
-        }
-
-        .name-title {
-            font-family: 'Cinzel', serif;
-            font-size: clamp(2rem, 5vw, 4rem);
-            font-weight: 700; margin-bottom: 10px;
-            background: linear-gradient(to bottom, #fff, #b89600);
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            background: linear-gradient(to bottom, #fff, #d4af37);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            transform-style: preserve-3d;
+            transition: 0.1s;
         }
 
-        .patronymic {
-            font-weight: 100; letter-spacing: 12px;
-            text-transform: uppercase; font-size: 14px;
-            opacity: 0.6; margin-bottom: 50px;
+        .hint {
+            position: absolute; bottom: 50px; opacity: 0.5;
+            font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
         }
-
-        /* İnteraktiv Element */
-        .interaction-zone {
-            position: relative; height: 150px;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .reveal-btn {
-            background: none; border: 1px solid var(--gold);
-            padding: 20px 50px; color: var(--gold);
-            font-family: 'Cinzel', serif; letter-spacing: 4px;
-            font-size: 12px; transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-            position: relative; overflow: hidden;
-        }
-
-        .reveal-btn:hover {
-            color: black; background: var(--gold);
-            box-shadow: 0 0 50px rgba(230, 184, 0, 0.4);
-        }
-
-        /* Gizli Məktub Bölməsi */
-        #hidden-content {
-            display: none; position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.98); z-index: 100;
-            padding: 40px; flex-direction: column;
-            align-items: center; justify-content: center;
-        }
-
-        .letter-body {
-            max-width: 600px; text-align: center;
-            opacity: 0; transform: translateY(20px);
-            transition: 2s ease;
-        }
-
-        .letter-body.active { opacity: 1; transform: translateY(0); }
-
-        .letter-title {
-            font-family: 'Great Vibes', cursive;
-            font-size: 4rem; color: var(--gold);
-            margin-bottom: 20px;
-        }
-
-        .letter-text {
-            line-height: 2; font-weight: 300;
-            font-size: 1.1rem; color: #eee;
-        }
-
-        .floating-heart {
-            position: absolute; color: var(--gold);
-            opacity: 0.3; pointer-events: none;
-            animation: floatUp 4s linear forwards;
-        }
-
-        @keyframes floatUp {
-            to { transform: translateY(-200px) rotate(360deg); opacity: 0; }
-        }
-
     </style>
 </head>
 <body>
 
-    <div id="cursor"></div>
-    <canvas id="bg-canvas"></canvas>
-
-    <div class="main-wrapper">
-        <div class="premium-card" id="card">
-            <div class="gold-border-top"></div>
-            <span class="top-label">Exclusive Digital Gift</span>
-            <h1 class="name-title">Milana Bağırzadə</h1>
-            <p class="patronymic">İlkin Qızı</p>
-            
-            <div class="interaction-zone">
-                <button class="reveal-btn" onclick="openExperience()">Təbrikini Gör</button>
-            </div>
-            
-            <p style="margin-top: 40px; font-size: 10px; opacity: 0.3; letter-spacing: 2px;">
-                15 APREL 2026 • BAKU, AZERBAIJAN
-            </p>
-        </div>
+    <div id="gate">
+        <button class="start-btn" onclick="init()">ŞOUNU BAŞLAT</button>
+        <p style="margin-top: 20px; font-size: 10px; opacity: 0.5;">(Səsi və sensorları açın)</p>
     </div>
 
-    <div id="hidden-content">
-        <div class="letter-body" id="letter">
-            <h2 class="letter-title">Əziz Milana...</h2>
-            <p class="letter-text">
-                Bu gün sadəcə təqvimdə bir tarix deyil, həm də sənin kimi nəcib bir insanın dünyanı gözəlləşdirdiyi gündür. 
-                İstədim ki, bu xüsusi gündə sənə rəqəmsal dünyanın ən incə detalları ilə bəzədilmiş bir hədiyyə təqdim edim. 
-                Həyatın bu ekrandakı ulduzlar qədər parlaq, qızılı rənglər qədər dəyərli və hər zaman uğurlarla dolu olsun. 
-                <br><br>
-                <strong>Ad günün mübarək!</strong>
-            </p>
-            <button class="reveal-btn" style="margin-top: 50px;" onclick="location.reload()">Geri Dön</button>
-        </div>
+    <canvas id="canvas"></canvas>
+
+    <div class="ui-layer">
+        <h1 class="name-3d" id="targetName">MILANA</h1>
+        <p style="letter-spacing: 10px; font-weight: 100; margin-top: 10px;">BAĞIRZADƏ İLKİN QIZI</p>
+        <div class="hint">TELEFONU SİRKƏLƏ VƏ ƏY</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <script>
-        // 1. Cursor İzləmə
-        const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+        const nameTag = document.getElementById('targetName');
+        let lastX, lastY, lastZ;
+        let moveCounter = 0;
+
+        function init() {
+            document.getElementById('gate').style.display = 'none';
             
-            // Kartın 3D meyli
-            const card = document.getElementById('card');
-            const x = (window.innerWidth / 2 - e.clientX) / 25;
-            const y = (window.innerHeight / 2 - e.clientY) / 25;
-            card.style.transform = `perspective(1000px) rotateY(${-x}deg) rotateX(${y}deg)`;
+            // Sensor İcazəsi (iOS 13+)
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission().then(state => {
+                    if (state === 'granted') {
+                        setupSensors();
+                    }
+                });
+            } else {
+                setupSensors();
+            }
+            
+            // İlk açılış fişəngi
+            fireworkGroup();
+        }
+
+        function setupSensors() {
+            // Əyilmə (Tilt) - Adın hərəkəti üçün
+            window.addEventListener('deviceorientation', (e) => {
+                let rotY = e.gamma / 1.5;
+                let rotX = (e.beta - 45) / 1.5;
+                nameTag.style.transform = `rotateY(${rotY}deg) rotateX(${-rotX}deg) translateZ(50px)`;
+            });
+
+            // Sirkələmə (Shake) - Fişəng üçün
+            window.addEventListener('devicemotion', (e) => {
+                let acc = e.accelerationIncludingGravity;
+                if (!acc.x) return;
+
+                let delta = Math.abs(acc.x + acc.y + acc.z - lastX - lastY - lastZ);
+                if (delta > 20) { // Sirkələmə həssaslığı
+                    moveCounter++;
+                    if (moveCounter > 5) { // Ardıcıl sirkələmə olduqda
+                        fireworkSingle();
+                        moveCounter = 0;
+                    }
+                }
+                lastX = acc.x; lastY = acc.y; lastZ = acc.z;
+            });
+        }
+
+        function fireworkSingle() {
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6, x: Math.random() },
+                colors: ['#ff0000', '#ffd700', '#ffffff', '#ff69b4'],
+                startVelocity: 45,
+                gravity: 1.2,
+                scalar: 1.2
+            });
+        }
+
+        function fireworkGroup() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        // Notebook üçün mouse dəstəyi
+        window.addEventListener('mousemove', (e) => {
+            if(window.innerWidth > 1000) {
+                let x = (e.clientX / window.innerWidth - 0.5) * 50;
+                let y = (e.clientY / window.innerHeight - 0.5) * 50;
+                nameTag.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+            }
         });
 
-        // 2. Canlı Ulduz Fonu (Canvas Engine)
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2;
-                this.speedX = Math.random() * 0.5 - 0.25;
-                this.speedY = Math.random() * 0.5 - 0.25;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x > canvas.width) this.x = 0;
-                if (this.x < 0) this.x = canvas.width;
-                if (this.y > canvas.height) this.y = 0;
-                if (this.y < 0) this.y = canvas.height;
-            }
-            draw() {
-                ctx.fillStyle = 'rgba(230, 184, 0, 0.5)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function createParticles() {
-            for (let i = 0; i < 150; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animate);
-        }
-
-        initCanvas();
-        createParticles();
-        animate();
-
-        // 3. Təcrübəni Başlat
-        function openExperience() {
-            // Qızılı Konfeti Partlayışı
-            const end = Date.now() + (3 * 1000);
-            const colors = ['#e6b800', '#ffffff', '#ffd700'];
-
-            (function frame() {
-                confetti({
-                    particleCount: 3,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 },
-                    colors: colors
-                });
-                confetti({
-                    particleCount: 3,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 },
-                    colors: colors
-                });
-
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
-            }());
-
-            // Ürəklər Yaradılması
-            setInterval(() => {
-                const heart = document.createElement('div');
-                heart.innerHTML = '❤';
-                heart.className = 'floating-heart';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.top = '100vh';
-                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
-                document.body.appendChild(heart);
-                setTimeout(() => heart.remove(), 4000);
-            }, 300);
-
-            // Keçid Animasiyası
-            document.getElementById('hidden-content').style.display = 'flex';
-            setTimeout(() => {
-                document.getElementById('letter').classList.add('active');
-            }, 500);
-        }
-
-        window.addEventListener('resize', initCanvas);
     </script>
 </body>
 </html>
