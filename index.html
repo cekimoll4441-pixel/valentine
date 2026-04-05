@@ -3,96 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sürpriz Təklif</title>
+    <title>Xüsusi Təbrik | Milana Bağırzadə</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        /* CSS Hissəsi - Görünüş */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: #050505;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
             height: 100vh;
-            background-color: #ffffff; /* Ağ fon */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; /* Düymənin ekrandan kənara çıxmaması üçün */
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .container {
+        /* Canlı Arxa Fon */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+            z-index: 1;
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 10;
             text-align: center;
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5);
+            animation: fadeIn 2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .luxury-text {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 14px;
+            letter-spacing: 5px;
+            color: #d4af37;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: block;
         }
 
         h1 {
-            color: #b32d2d; /* Şəkildəki tünd qırmızı rəng */
             font-size: 2.5rem;
+            font-weight: 200;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, #d4af37, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sub-details {
+            font-size: 12px;
+            opacity: 0.6;
             margin-bottom: 40px;
+            letter-spacing: 2px;
         }
 
-        .buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        button {
-            padding: 10px 30px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 4px;
+        /* Hədiyyə Animasiyası */
+        .gift-wrapper {
+            position: relative;
+            display: inline-block;
             cursor: pointer;
-            transition: transform 0.1s ease;
+            transition: 0.5s;
         }
 
-        /* Yaşıl Bəli düyməsi */
-        #yesBtn {
-            background-color: #4CAF50;
-            color: white;
+        .gift-wrapper:hover { transform: scale(1.1); }
+
+        .finger-pointer {
+            font-size: 40px;
+            margin-bottom: 10px;
+            animation: fingerMove 1.5s infinite;
         }
 
-        /* Qırmızı Xeyr düyməsi */
-        #noBtn {
-            background-color: #f44336;
-            color: white;
-            position: absolute; /* Qaçması üçün vacibdir */
+        @keyframes fingerMove {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(10px) scale(0.9); }
         }
 
-        #yesBtn:hover {
-            transform: scale(1.1);
+        .open-btn {
+            background: none;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 15px 40px;
+            border-radius: 0;
+            font-size: 14px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.5s;
         }
+
+        .open-btn:hover {
+            background: #d4af37;
+            color: #000;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Mesaj Paneli */
+        #final-message {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .message-content {
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .message-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: #d4af37;
+            margin-bottom: 20px;
+        }
+
+        .message-content p {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #ccc;
+        }
+
+        .heart { color: #ff3e3e; font-size: 24px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Mənim Sevgilim Olarsan?</h1>
-        <div class="buttons">
-            <button id="yesBtn">Bəli</button>
-            <button id="noBtn">Xeyr</button>
+    <div id="particles-js"></div>
+
+    <div class="main-container">
+        <span class="luxury-text">Xüsusi Təqdimat</span>
+        <h1>Milana Bağırzadə</h1>
+        <p class="sub-details">İlkin qızı • 15 Aprel</p>
+        
+        <div class="gift-wrapper" onclick="startExperience()">
+            <div class="finger-pointer">👆</div>
+            <button class="open-btn">Hədiyyəni Aç</button>
         </div>
     </div>
 
+    <div id="final-message">
+        <div class="message-content">
+            <h2 id="typed-title"></h2>
+            <p id="typed-text"></p>
+            <br>
+            <span class="heart">❤</span>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        /* JavaScript Hissəsi - Hərəkət */
-        const noBtn = document.getElementById('noBtn');
-        const yesBtn = document.getElementById('yesBtn');
-
-        // "Xeyr" düyməsinin üzərinə gələndə qaçması
-        noBtn.addEventListener('mouseover', () => {
-            // Ekranın ölçülərinə görə təsadüfi yer seçirik
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-            
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
+        // Particles.js Ayarları
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#d4af37" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5 },
+                "size": { "value": 3 },
+                "line_linked": { "enable": true, "distance": 150, "color": "#d4af37", "opacity": 0.2, "width": 1 },
+                "move": { "enable": true, "speed": 2 }
+            }
         });
 
-        // "Bəli" düyməsinə basıldıqda mesaj çıxması
-        yesBtn.addEventListener('click', () => {
-            alert('Təbriklər! Artıq sevgilisiniz! ❤️');
-            // İstəsən bura bir konfeti effekti və ya musiqi də əlavə edə bilərik
-        });
+        function startExperience() {
+            // Konfeti Partlayışı
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#d4af37', '#ffffff', '#ff0000']
+            });
+
+            setTimeout(() => {
+                document.querySelector('.main-container').style.opacity = '0';
+                document.getElementById('final-message').style.display = 'flex';
+                typeWriter();
+            }, 500);
+        }
+
+        // Yazı Animasiyası (Typewriter)
+        const title = "Təbrik Edirəm!";
+        const text = "Bu gün sənin günündür, Milana. Arzu edirəm ki, həyatın bu saytın parıltısı qədər parlaq və gözəl olsun. İlkin qızı olaraq hər zaman ailənin və dostlarının fəxri olasan. Ad günün mübarək!";
+        
+        let i = 0;
+        let j = 0;
+
+        function typeWriter() {
+            if (i < title.length) {
+                document.getElementById("typed-title").innerHTML += title.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+            } else if (j < text.length) {
+                document.getElementById("typed-text").innerHTML += text.charAt(j);
+                j++;
+                setTimeout(typeWriter, 50);
+            }
+        }
     </script>
-
 </body>
 </html>
