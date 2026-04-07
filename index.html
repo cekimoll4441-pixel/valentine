@@ -1,161 +1,125 @@
-
 <!DOCTYPE html>
 <html lang="az">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Milana | Firework Show</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@100;400&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad Günün Mübarək | Milana</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: #000; 
-            color: #fff; 
-            font-family: 'Montserrat', sans-serif; 
-            overflow: hidden; 
-            height: 100vh;
+        :root {
+            --gold: #d4af37;
+            --dark: #0f0f0f;
+            --soft-pink: #ffb6c1;
         }
 
-        /* Başlanğıc Ekranı */
-        #gate {
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: var(--dark);
+            font-family: 'Poppins', sans-serif; color: white;
+        }
+
+        .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 1000; display: flex;
-            flex-direction: column; align-items: center; justify-content: center;
+            background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; z-index: 100; text-align: center;
         }
 
-        .start-btn {
-            background: none; border: 1px solid #d4af37; color: #d4af37;
-            padding: 20px 60px; font-family: 'Cinzel'; letter-spacing: 5px;
-            cursor: pointer; transition: 0.5s; font-size: 1.2rem;
+        .profile-container {
+            width: 150px; height: 150px;
+            border: 3px solid var(--gold); border-radius: 50%;
+            padding: 5px; box-shadow: 0 0 20px var(--gold);
+            margin-bottom: 20px; animation: pulse 2s infinite;
         }
 
-        .start-btn:hover { background: #d4af37; color: #000; box-shadow: 0 0 50px #d4af37; }
-
-        /* Əsas Səhnə */
-        #canvas { position: fixed; top: 0; left: 0; z-index: 1; }
-
-        .ui-layer {
-            position: relative; z-index: 10; height: 100vh;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            pointer-events: none; text-align: center;
+        .profile-img {
+            width: 100%; height: 100%; border-radius: 50%;
+            background: #333; display: flex; align-items: center; justify-content: center;
+            font-size: 50px;
         }
 
-        .name-3d {
-            font-family: 'Cinzel', serif;
-            font-size: clamp(2.5rem, 8vw, 5rem);
-            background: linear-gradient(to bottom, #fff, #d4af37);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
-            transform-style: preserve-3d;
-            transition: 0.1s;
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 20px var(--gold); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px var(--gold); }
+            100% { transform: scale(1); box-shadow: 0 0 20px var(--gold); }
         }
 
-        .hint {
-            position: absolute; bottom: 50px; opacity: 0.5;
-            font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+        h1 { font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--gold); margin: 10px 0; }
+        p.sub-name { letter-spacing: 3px; text-transform: uppercase; font-size: 0.9rem; opacity: 0.8; }
+
+        .btn-open {
+            margin-top: 30px; padding: 15px 40px;
+            background: transparent; border: 2px solid var(--gold);
+            color: var(--gold); cursor: pointer; border-radius: 50px;
+            font-weight: 600; transition: 0.4s; font-size: 1.1rem;
+            position: relative; overflow: hidden;
         }
+
+        .btn-open:hover { background: var(--gold); color: black; box-shadow: 0 0 30px var(--gold); }
+
+        /* Məktub Hissəsi */
+        #message-box {
+            display: none; position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 85%; max-width: 500px;
+            background: white; color: #333; padding: 30px; border-radius: 15px;
+            z-index: 200; box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+            text-align: center; line-height: 1.6;
+        }
+
+        #message-box h2 { color: #d63384; font-family: 'Dancing Script', cursive; }
+        .close-msg { margin-top: 20px; cursor: pointer; color: #777; font-size: 0.8rem; text-decoration: underline; }
+
+        .hand-icon { font-size: 2rem; margin-top: 10px; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     </style>
 </head>
 <body>
 
-    <div id="gate">
-        <button class="start-btn" onclick="init()">ŞOUNU BAŞLAT</button>
-        <p style="margin-top: 20px; font-size: 10px; opacity: 0.5;">(Səsi və sensorları açın)</p>
+    <div class="overlay" id="main-ui">
+        <div class="profile-container">
+            <div class="profile-img">👑</div> 
+        </div>
+        <p class="sub-name">Milana Bağırzadə İlkin qızı</p>
+        <h1>Ad Günün Mübarək!</h1>
+        <div class="hand-icon">👇</div>
+        <button class="btn-open" onclick="openGift()">Hədiyyəni Aç</button>
     </div>
 
-    <canvas id="canvas"></canvas>
-
-    <div class="ui-layer">
-        <h1 class="name-3d" id="targetName">MILANA</h1>
-        <p style="letter-spacing: 10px; font-weight: 100; margin-top: 10px;">BAĞIRZADƏ İLKİN QIZI</p>
-        <div class="hint">TELEFONU SİRKƏLƏ VƏ ƏY</div>
+    <div id="message-box">
+        <h2>Canım Dostum Milana!</h2>
+        <p>Aprelin 15-i sənin günündür. Yeni yaşında sənə sonsuz xoşbəxtlik, uğur və gülüş arzulayıram. Hər zaman belə nəcib və işıqlı qalmağın diləyi ilə...</p>
+        <p><strong>Yaxşı ki, varsan!</strong></p>
+        <div class="close-msg" onclick="closeGift()">Bağla</div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <script>
-        const nameTag = document.getElementById('targetName');
-        let lastX, lastY, lastZ;
-        let moveCounter = 0;
-
-        function init() {
-            document.getElementById('gate').style.display = 'none';
-            
-            // Sensor İcazəsi (iOS 13+)
-            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(state => {
-                    if (state === 'granted') {
-                        setupSensors();
-                    }
-                });
-            } else {
-                setupSensors();
-            }
-            
-            // İlk açılış fişəngi
-            fireworkGroup();
-        }
-
-        function setupSensors() {
-            // Əyilmə (Tilt) - Adın hərəkəti üçün
-            window.addEventListener('deviceorientation', (e) => {
-                let rotY = e.gamma / 1.5;
-                let rotX = (e.beta - 45) / 1.5;
-                nameTag.style.transform = `rotateY(${rotY}deg) rotateX(${-rotX}deg) translateZ(50px)`;
-            });
-
-            // Sirkələmə (Shake) - Fişəng üçün
-            window.addEventListener('devicemotion', (e) => {
-                let acc = e.accelerationIncludingGravity;
-                if (!acc.x) return;
-
-                let delta = Math.abs(acc.x + acc.y + acc.z - lastX - lastY - lastZ);
-                if (delta > 20) { // Sirkələmə həssaslığı
-                    moveCounter++;
-                    if (moveCounter > 5) { // Ardıcıl sirkələmə olduqda
-                        fireworkSingle();
-                        moveCounter = 0;
-                    }
-                }
-                lastX = acc.x; lastY = acc.y; lastZ = acc.z;
-            });
-        }
-
-        function fireworkSingle() {
-            confetti({
-                particleCount: 150,
-                spread: 100,
-                origin: { y: 0.6, x: Math.random() },
-                colors: ['#ff0000', '#ffd700', '#ffffff', '#ff69b4'],
-                startVelocity: 45,
-                gravity: 1.2,
-                scalar: 1.2
-            });
-        }
-
-        function fireworkGroup() {
-            var duration = 3 * 1000;
+        function openGift() {
+            // Konfeti effekti
+            var duration = 5 * 1000;
             var animationEnd = Date.now() + duration;
             var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
 
             var interval = setInterval(function() {
                 var timeLeft = animationEnd - Date.now();
                 if (timeLeft <= 0) return clearInterval(interval);
                 var particleCount = 50 * (timeLeft / duration);
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
             }, 250);
+
+            document.getElementById('message-box').style.display = 'block';
+            document.getElementById('main-ui').style.filter = 'blur(8px)';
         }
 
-        // Notebook üçün mouse dəstəyi
-        window.addEventListener('mousemove', (e) => {
-            if(window.innerWidth > 1000) {
-                let x = (e.clientX / window.innerWidth - 0.5) * 50;
-                let y = (e.clientY / window.innerHeight - 0.5) * 50;
-                nameTag.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
-            }
-        });
-
+        function closeGift() {
+            document.getElementById('message-box').style.display = 'none';
+            document.getElementById('main-ui').style.filter = 'none';
+        }
     </script>
 </body>
 </html>
