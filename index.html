@@ -1,1 +1,161 @@
 
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Milana | Firework Show</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@100;400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Montserrat', sans-serif; 
+            overflow: hidden; 
+            height: 100vh;
+        }
+
+        /* Başlanğıc Ekranı */
+        #gate {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 1000; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .start-btn {
+            background: none; border: 1px solid #d4af37; color: #d4af37;
+            padding: 20px 60px; font-family: 'Cinzel'; letter-spacing: 5px;
+            cursor: pointer; transition: 0.5s; font-size: 1.2rem;
+        }
+
+        .start-btn:hover { background: #d4af37; color: #000; box-shadow: 0 0 50px #d4af37; }
+
+        /* Əsas Səhnə */
+        #canvas { position: fixed; top: 0; left: 0; z-index: 1; }
+
+        .ui-layer {
+            position: relative; z-index: 10; height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            pointer-events: none; text-align: center;
+        }
+
+        .name-3d {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            background: linear-gradient(to bottom, #fff, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            transform-style: preserve-3d;
+            transition: 0.1s;
+        }
+
+        .hint {
+            position: absolute; bottom: 50px; opacity: 0.5;
+            font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="gate">
+        <button class="start-btn" onclick="init()">ŞOUNU BAŞLAT</button>
+        <p style="margin-top: 20px; font-size: 10px; opacity: 0.5;">(Səsi və sensorları açın)</p>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="ui-layer">
+        <h1 class="name-3d" id="targetName">MILANA</h1>
+        <p style="letter-spacing: 10px; font-weight: 100; margin-top: 10px;">BAĞIRZADƏ İLKİN QIZI</p>
+        <div class="hint">TELEFONU SİRKƏLƏ VƏ ƏY</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <script>
+        const nameTag = document.getElementById('targetName');
+        let lastX, lastY, lastZ;
+        let moveCounter = 0;
+
+        function init() {
+            document.getElementById('gate').style.display = 'none';
+            
+            // Sensor İcazəsi (iOS 13+)
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission().then(state => {
+                    if (state === 'granted') {
+                        setupSensors();
+                    }
+                });
+            } else {
+                setupSensors();
+            }
+            
+            // İlk açılış fişəngi
+            fireworkGroup();
+        }
+
+        function setupSensors() {
+            // Əyilmə (Tilt) - Adın hərəkəti üçün
+            window.addEventListener('deviceorientation', (e) => {
+                let rotY = e.gamma / 1.5;
+                let rotX = (e.beta - 45) / 1.5;
+                nameTag.style.transform = `rotateY(${rotY}deg) rotateX(${-rotX}deg) translateZ(50px)`;
+            });
+
+            // Sirkələmə (Shake) - Fişəng üçün
+            window.addEventListener('devicemotion', (e) => {
+                let acc = e.accelerationIncludingGravity;
+                if (!acc.x) return;
+
+                let delta = Math.abs(acc.x + acc.y + acc.z - lastX - lastY - lastZ);
+                if (delta > 20) { // Sirkələmə həssaslığı
+                    moveCounter++;
+                    if (moveCounter > 5) { // Ardıcıl sirkələmə olduqda
+                        fireworkSingle();
+                        moveCounter = 0;
+                    }
+                }
+                lastX = acc.x; lastY = acc.y; lastZ = acc.z;
+            });
+        }
+
+        function fireworkSingle() {
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6, x: Math.random() },
+                colors: ['#ff0000', '#ffd700', '#ffffff', '#ff69b4'],
+                startVelocity: 45,
+                gravity: 1.2,
+                scalar: 1.2
+            });
+        }
+
+        function fireworkGroup() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        // Notebook üçün mouse dəstəyi
+        window.addEventListener('mousemove', (e) => {
+            if(window.innerWidth > 1000) {
+                let x = (e.clientX / window.innerWidth - 0.5) * 50;
+                let y = (e.clientY / window.innerHeight - 0.5) * 50;
+                nameTag.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+            }
+        });
+
+    </script>
+</body>
+</html>
