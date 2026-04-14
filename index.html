@@ -3,123 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ad Günün Mübarək | Milana</title>
+    <title>Milana üçün 17 Yaş Təbriki</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --gold: #d4af37;
-            --dark: #0f0f0f;
-            --soft-pink: #ffb6c1;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
 
+        * { box-sizing: border-box; }
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; background: var(--dark);
-            font-family: 'Poppins', sans-serif; color: white;
+            margin: 0; padding: 0; width: 100%; min-height: 100%;
+            font-family: 'Poppins', sans-serif; background: #fff5f8;
+            display: flex; justify-content: center; align-items: center;
+            overflow-x: hidden;
         }
 
-        .overlay {
+        /* Giriş Pərdəsi */
+        .curtain {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; z-index: 100; text-align: center;
+            background: linear-gradient(135deg, #ffc0cb, #ffb6c1); z-index: 100;
+            transition: transform 1.5s cubic-bezier(0.7, 0, 0.3, 1);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .curtain-text { font-family: 'Dancing Script', cursive; font-size: 4.5rem; color: #c71585; margin-bottom: 20px; }
+        .start-btn { padding: 15px 45px; font-size: 1.2rem; background: white; color: #c71585; border: none; border-radius: 50px; cursor: pointer; font-weight: 600; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .open-curtain { transform: translateY(-100%); }
+
+        /* Əsas Səhifə */
+        .main-container { text-align: center; animation: fadeIn 2s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .profile-name {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            color: #c71585; margin-bottom: 10px;
+        }
+        .sub-text { color: #db7093; font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 30px; }
+
+        .letter-icon {
+            font-size: 80px; cursor: pointer; transition: 0.4s;
+            display: inline-block; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+        }
+        .letter-icon:hover { transform: scale(1.2) rotate(5deg); }
+
+        /* Məktub Modalı */
+        .overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 245, 248, 0.98); z-index: 200;
+            overflow-y: auto; padding: 40px 20px;
         }
 
-        .profile-container {
-            width: 150px; height: 150px;
-            border: 3px solid var(--gold); border-radius: 50%;
-            padding: 5px; box-shadow: 0 0 20px var(--gold);
-            margin-bottom: 20px; animation: pulse 2s infinite;
+        .full-letter {
+            max-width: 700px; margin: 0 auto; background: white;
+            padding: 50px; border-radius: 30px; border: 1px solid #ffd1dc;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            position: relative;
         }
 
-        .profile-img {
-            width: 100%; height: 100%; border-radius: 50%;
-            background: #333; display: flex; align-items: center; justify-content: center;
-            font-size: 50px;
+        .full-letter h1 { font-family: 'Dancing Script', cursive; color: #c71585; border-bottom: 2px solid #fff0f5; padding-bottom: 15px; }
+        .full-letter p { line-height: 2; color: #444; font-size: 1.15rem; text-align: justify; white-space: pre-line; }
+        
+        .age-badge {
+            display: inline-block; background: #ff69b4; color: white;
+            padding: 5px 15px; border-radius: 20px; font-size: 1rem; margin-bottom: 15px;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 20px var(--gold); }
-            50% { transform: scale(1.05); box-shadow: 0 0 40px var(--gold); }
-            100% { transform: scale(1); box-shadow: 0 0 20px var(--gold); }
+        .close-btn {
+            display: block; width: 150px; margin: 30px auto 0;
+            padding: 12px; text-align: center; background: #ff69b4;
+            color: white; border-radius: 10px; cursor: pointer; font-weight: 600;
         }
-
-        h1 { font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--gold); margin: 10px 0; }
-        p.sub-name { letter-spacing: 3px; text-transform: uppercase; font-size: 0.9rem; opacity: 0.8; }
-
-        .btn-open {
-            margin-top: 30px; padding: 15px 40px;
-            background: transparent; border: 2px solid var(--gold);
-            color: var(--gold); cursor: pointer; border-radius: 50px;
-            font-weight: 600; transition: 0.4s; font-size: 1.1rem;
-            position: relative; overflow: hidden;
-        }
-
-        .btn-open:hover { background: var(--gold); color: black; box-shadow: 0 0 30px var(--gold); }
-
-        /* Məktub Hissəsi */
-        #message-box {
-            display: none; position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); width: 85%; max-width: 500px;
-            background: white; color: #333; padding: 30px; border-radius: 15px;
-            z-index: 200; box-shadow: 0 10px 50px rgba(0,0,0,0.5);
-            text-align: center; line-height: 1.6;
-        }
-
-        #message-box h2 { color: #d63384; font-family: 'Dancing Script', cursive; }
-        .close-msg { margin-top: 20px; cursor: pointer; color: #777; font-size: 0.8rem; text-decoration: underline; }
-
-        .hand-icon { font-size: 2rem; margin-top: 10px; animation: bounce 1s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     </style>
 </head>
 <body>
 
-    <div class="overlay" id="main-ui">
-        <div class="profile-container">
-            <div class="profile-img">👑</div> 
-        </div>
-        <p class="sub-name">Milana Bağırzadə İlkin qızı</p>
-        <h1>Ad Günün Mübarək!</h1>
-        <div class="hand-icon">👇</div>
-        <button class="btn-open" onclick="openGift()">Hədiyyəni Aç</button>
+<div class="curtain" id="curtain">
+    <div class="curtain-text">Milana 🌸</div>
+    <button class="start-btn" onclick="openCurtain()">Məktubu Aç ✨</button>
+</div>
+
+<div class="main-container">
+    <div class="profile-name">Milana</div>
+    <div class="sub-text">15 APREL 2009 — 2026</div>
+    <div class="letter-icon" onclick="showLetter()">✉️</div>
+    <p style="color: #c71585; font-size: 0.9rem;">(Oxumaq üçün məktubun üzərinə toxun)</p>
+</div>
+
+<div class="overlay" id="letterOverlay">
+    <div class="full-letter">
+        <div class="age-badge">Xoş gəldin, 17 yaş! 🎂</div>
+        <h1>Əziz Milana... ✨</h1>
+        <p>
+            Bu gün təqvim 15 aprel 2026-cı ili göstərir. Bu o deməkdir ki, sənin 2009-cu ildə başlayan həyat yolunun ən gözəl dayanacaqlarından birinə — **17 yaşına** qədəm qoymusan! Hazırlıq yoldaşın olaraq səni bu xüsusi gün münasibətilə ürəkdən təbrik edirəm.
+
+            17 yaş gəncliyin ən enerjili, xəyalların isə ən real olduğu yaşdır. Artıq uşaqlıq illərini arxada qoyub, müstəqil gələcəyə doğru böyük bir addım atırsan. 11-ci sinif şagirdi kimi qarşındakı o çətin, amma şərəfli yolda sənə tükənməz uğurlar arzulayıram. Sənin zəkan və əzmin mütləq səni hədəflərinə çatdıracaq.
+
+            Heç vaxt unutma ki, atan **İlkin müəllimin** sənin üzərində çəkdiyi əziyyətlər və sənə olan inamı sənin ən böyük gücündür. Bu il qazanacağın tələbə adı həm sənin 17 illik zəhmətinin bəhrəsi, həm də valideynlərinin başını uca edəcək ən gözəl ad günü hədiyyəsi olacaq. İnşallah xəyalındakı universitetin qapıları sənin üzünə taybatay açılar.
+
+            Yeni yaşında sənə can sağlığı, bitib-tükənməyən xoşbəxtlik və hər günündə yeni bir uğur arzulayıram. Yolun hər zaman işıqlı, uğurların isə 17 yaşın kimi təravətli olsun.
+
+            Ad günün mübarək, Milana! 🌸🎂✨
+        </p>
+        <div class="close-btn" onclick="hideLetter()">Bağla</div>
     </div>
+</div>
 
-    <div id="message-box">
-        <h2>Canım Dostum Milana!</h2>
-        <p>Aprelin 15-i sənin günündür. Yeni yaşında sənə sonsuz xoşbəxtlik, uğur və gülüş arzulayıram. Hər zaman belə nəcib və işıqlı qalmağın diləyi ilə...</p>
-        <p><strong>Yaxşı ki, varsan!</strong></p>
-        <div class="close-msg" onclick="closeGift()">Bağla</div>
-    </div>
+<script>
+    function openCurtain() {
+        document.getElementById('curtain').classList.add('open-curtain');
+        setTimeout(() => {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff69b4', '#ff1493', '#ffffff']
+            });
+        }, 500);
+    }
 
-    <script>
-        function openGift() {
-            // Konfeti effekti
-            var duration = 5 * 1000;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+    function showLetter() {
+        document.getElementById('letterOverlay').style.display = 'block';
+        window.scrollTo(0,0);
+    }
 
-            function randomInRange(min, max) {
-                return Math.random() * (max - min) + min;
-            }
+    function hideLetter() {
+        document.getElementById('letterOverlay').style.display = 'none';
+    }
+</script>
 
-            var interval = setInterval(function() {
-                var timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) return clearInterval(interval);
-                var particleCount = 50 * (timeLeft / duration);
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-            }, 250);
-
-            document.getElementById('message-box').style.display = 'block';
-            document.getElementById('main-ui').style.filter = 'blur(8px)';
-        }
-
-        function closeGift() {
-            document.getElementById('message-box').style.display = 'none';
-            document.getElementById('main-ui').style.filter = 'none';
-        }
-    </script>
 </body>
 </html>
