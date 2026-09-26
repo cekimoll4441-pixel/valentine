@@ -1,122 +1,597 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Heart Particle Animation</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background-color: #000;
-        }
-        canvas {
-            display: block;
-        }
-    </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You ❤️</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#050005;
+    color:white;
+}
+
+/* =========================
+   QUESTION SCREEN
+========================= */
+
+#questionScreen{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+        radial-gradient(circle at 50% 45%,#ff1685 0%,#65002f 18%,#170016 55%,#030003 100%);
+}
+
+.questionBox{
+    width:min(90%,600px);
+    text-align:center;
+    padding:50px 25px;
+    position:relative;
+    z-index:10;
+}
+
+.mainHeart{
+    font-size:90px;
+    filter:drop-shadow(0 0 25px #ff1685);
+    animation:pulse 1.2s infinite;
+}
+
+h1{
+    margin-top:20px;
+    font-size:clamp(30px,7vw,55px);
+    text-shadow:
+        0 0 10px white,
+        0 0 25px #ff1685;
+}
+
+.questionText{
+    margin-top:15px;
+    color:#ffd8eb;
+    font-size:19px;
+}
+
+.buttons{
+    margin-top:40px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:20px;
+}
+
+button{
+    border:0;
+    padding:17px 38px;
+    border-radius:50px;
+    font-size:20px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.25s;
+}
+
+#yes{
+    background:linear-gradient(135deg,#ff2388,#ff006a);
+    color:white;
+    box-shadow:
+        0 0 15px #ff2388,
+        0 0 40px #ff006a;
+}
+
+#no{
+    background:#292129;
+    color:white;
+    border:1px solid #777;
+}
+
+/* =========================
+   LOVE SCREEN
+========================= */
+
+#loveScreen{
+    display:none;
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    background:#050005;
+}
+
+/* LOVE YOU yazıları arxa planda */
+
+.loveWall{
+    position:absolute;
+    inset:-20%;
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:5px;
+    transform:rotate(-3deg) scale(1.15);
+    opacity:.8;
+}
+
+.loveWord{
+    font-size:24px;
+    font-weight:900;
+    color:#ff0080;
+    text-shadow:
+        0 0 5px #ff0080,
+        0 0 15px #ff0080,
+        0 0 30px #ff0080;
+    animation:flicker 1.5s infinite alternate;
+}
+
+.loveWord:nth-child(3n){
+    animation-delay:.3s;
+}
+
+.loveWord:nth-child(4n){
+    color:#ff4ca5;
+    animation-delay:.7s;
+}
+
+/* mərkəz */
+
+.centerLove{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    text-align:center;
+    z-index:20;
+}
+
+.loveTitle{
+    font-size:clamp(45px,10vw,100px);
+    font-weight:1000;
+    letter-spacing:5px;
+    color:white;
+
+    text-shadow:
+        0 0 5px white,
+        0 0 15px #ff1685,
+        0 0 30px #ff1685,
+        0 0 70px #ff0080;
+
+    animation:loveAppear 1.5s ease;
+}
+
+.bigHeart{
+    margin:20px auto;
+    width:170px;
+    height:150px;
+    position:relative;
+    animation:heartBeat 1s infinite;
+    filter:
+        drop-shadow(0 0 15px white)
+        drop-shadow(0 0 40px #ff1685)
+        drop-shadow(0 0 80px #ff0080);
+}
+
+/* CSS ürək */
+
+.bigHeart:before,
+.bigHeart:after{
+    content:"";
+    position:absolute;
+    top:0;
+    width:90px;
+    height:140px;
+    background:white;
+    border-radius:90px 90px 0 0;
+}
+
+.bigHeart:before{
+    left:80px;
+    transform:rotate(45deg);
+    transform-origin:0 100%;
+}
+
+.bigHeart:after{
+    left:0;
+    transform:rotate(-45deg);
+    transform-origin:100% 100%;
+}
+
+.loveMessage{
+    font-size:22px;
+    color:#fff;
+    text-shadow:0 0 15px #ff1685;
+}
+
+/* =========================
+   PARTICLES
+========================= */
+
+.particle{
+    position:absolute;
+    color:#ff1685;
+    pointer-events:none;
+    animation:fall linear forwards;
+    z-index:5;
+}
+
+.spark{
+    position:absolute;
+    width:4px;
+    height:4px;
+    border-radius:50%;
+    background:white;
+    box-shadow:
+        0 0 8px white,
+        0 0 20px #ff1685;
+    animation:sparkle 1.5s infinite;
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes pulse{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.18)}
+}
+
+@keyframes heartBeat{
+    0%,100%{transform:scale(1)}
+    30%{transform:scale(1.12)}
+    60%{transform:scale(.96)}
+}
+
+@keyframes flicker{
+    0%{opacity:.3}
+    50%{opacity:1}
+    100%{opacity:.5}
+}
+
+@keyframes loveAppear{
+    from{
+        opacity:0;
+        transform:scale(.2);
+        filter:blur(20px);
+    }
+    to{
+        opacity:1;
+        transform:scale(1);
+        filter:blur(0);
+    }
+}
+
+@keyframes fall{
+    from{
+        transform:translateY(-50px) rotate(0);
+        opacity:1;
+    }
+    to{
+        transform:translateY(110vh) rotate(360deg);
+        opacity:0;
+    }
+}
+
+@keyframes sparkle{
+    0%,100%{
+        transform:scale(.3);
+        opacity:.2;
+    }
+    50%{
+        transform:scale(1.8);
+        opacity:1;
+    }
+}
+
+/* mobil */
+
+@media(max-width:600px){
+
+    .loveWall{
+        grid-template-columns:repeat(5,1fr);
+    }
+
+    .loveWord{
+        font-size:16px;
+    }
+
+    .bigHeart{
+        width:130px;
+        height:115px;
+    }
+
+    .bigHeart:before,
+    .bigHeart:after{
+        width:70px;
+        height:105px;
+    }
+
+    .buttons{
+        gap:12px;
+    }
+
+    button{
+        padding:14px 28px;
+        font-size:18px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <script>
-        // 1. Three.js Səhnəsinin Qurulması (Scene, Camera, Renderer)
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 30;
+<!-- =========================
+     SUAL
+========================= -->
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
+<div id="questionScreen">
 
-        // 2. Ürək Formasının Riyazi Olaraq Yaradılması (SVG Path məntiqi əvəzinə birbaşa riyazi formul)
-        const vertices = [];
-        const totalParticles = 1500; // Hissəcik sayı
+    <div class="questionBox">
 
-        // Şəkildəki GSAP animasiya zamanlaması üçün timeline
-        const tl = gsap.timeline({
-            repeat: -1,
-            yoyo: true
-        });
+        <div class="mainHeart">❤️</div>
 
-        // Ürəyin 3D koordinatlarını hesablamaq üçün funksiya
-        function getHeartPoint(t) {
-            // Riyazi ürək formulu (Parametrik)
-            const x = 16 * Math.pow(Math.sin(t), 3);
-            const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-            return { x: x * 0.8, y: y * 0.8 }; // 0.8 ölçünü tənzimləmək üçündür
-        }
+        <h1>Mənimlə sevgili olarsan?</h1>
 
-        // Hissəciklərin həndəsi strukturunu yaradırıq
-        const geometry = new THREE.BufferGeometry();
-        const positions = [];
+        <div class="questionText" id="questionText">
+            Düzgün cavabı seç... 👀
+        </div>
 
-        for (let i = 0; i < totalParticles; i++) {
-            // 0 ilə 2*PI arasında təsadüfi bucaq
-            const t = Math.random() * Math.PI * 2;
-            const point = getHeartPoint(t);
+        <div class="buttons">
 
-            // Şəkildəki kodun eynisi: Vector3 yaradılır və təsadüfi dağılma (randomness) əlavə edilir
-            const vector = new THREE.Vector3(point.x, point.y, 0);
-            
-            // Şəkildəki kimi random yayılma effektləri
-            vector.x += (Math.random() - 0.5) * 2;
-            vector.y += (Math.random() - 0.5) * 2;
-            vector.z += (Math.random() - 0.5) * 5;
+            <button id="yes">
+                YES ❤️
+            </button>
 
-            positions.push(vector.x, vector.y, vector.z);
-            vertices.push(vector); // GSAP animasiyası üçün massivdə saxlayırıq
+            <button id="no">
+                NO 😭
+            </button>
 
-            // Şəkildəki GSAP Animasiya Bloku:
-            tl.from(vector, {
-                x: 0, // Mərkəzdən başlasın (Şəkildə: 600 / 2)
-                y: 0, // Mərkəzdən başlasın (Şəkildə: -552 / 2)
-                z: 0,
-                ease: "power2.inOut",
-                duration: gsap.utils.random(2, 5), // Təsadüfi müddət
-            }, i * 0.002); // Hər nöqtə üçün gecikmə (delay)
-        }
+        </div>
 
-        // Mövqeləri həndəsəyə ötürürük
-        geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    </div>
 
-        // Hissəciklərin vizual görünüşü (Çəhrayı/Qırmızı rəngli ulduzlar kimi)
-        const material = new THREE.PointsMaterial({
-            color: 0xff4d6d, // Şəkildəki kimi gözəl çəhrayı-qırmızı ton
-            size: 0.3,
-            transparent: true,
-            opacity: 0.8,
-            blending: THREE.AdditiveBlending
-        });
+</div>
 
-        const particleSystem = new THREE.Points(geometry, material);
-        scene.add(particleSystem);
 
-        // 3. Animasiya Dövrü (Render Loop)
-        function animate() {
-            requestAnimationFrame(animate);
+<!-- =========================
+     FINAL
+========================= -->
 
-            // GSAP obyektlərin dəyərlərini (vector) dəyişdiyi üçün hər freymdə mövqeləri yeniləməliyik
-            const positionAttribute = geometry.getAttribute('position');
-            for (let i = 0; i < vertices.length; i++) {
-                positionAttribute.setXYZ(i, vertices[i].x, vertices[i].y, vertices[i].z);
-            }
-            positionAttribute.needsUpdate = true;
+<div id="loveScreen">
 
-            // Ürəyin yavaşca fırlanması üçün (vizual effekti artırır)
-            particleSystem.rotation.y += 0.002;
+    <div class="loveWall" id="loveWall"></div>
 
-            renderer.render(scene, camera);
-        }
+    <div class="centerLove">
 
-        // Ekran ölçüsü dəyişəndə uyğunlaşma (Responsive)
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        <div class="loveTitle">
+            LOVE YOU
+        </div>
 
-        animate();
-    </script>
+        <div class="bigHeart"></div>
+
+        <div class="loveMessage">
+            Səni sevirəm ❤️‍🔥
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const yes = document.getElementById("yes");
+const no = document.getElementById("no");
+
+const questionScreen =
+document.getElementById("questionScreen");
+
+const loveScreen =
+document.getElementById("loveScreen");
+
+const questionText =
+document.getElementById("questionText");
+
+let yesScale = 1;
+let noScale = 1;
+let noClicks = 0;
+
+
+/* =========================
+   NO
+========================= */
+
+no.addEventListener("click",()=>{
+
+    noClicks++;
+
+    yesScale += .18;
+
+    noScale -= .13;
+
+    if(noScale < .25)
+        noScale=.25;
+
+    yes.style.transform=
+        `scale(${yesScale})`;
+
+    no.style.transform=
+        `scale(${noScale})`;
+
+
+    const texts=[
+        "Əminsən? 🥺",
+        "Bir də düşün 😭",
+        "Həqiqətən NO? 😭",
+        "NO getdikcə kiçilir 😂",
+        "YES daha yaxşı seçimdir ❤️",
+        "Artıq qaça bilməzsən 😭",
+        "Son şans... ❤️"
+    ];
+
+    questionText.innerText=
+        texts[Math.min(noClicks-1,texts.length-1)];
+
+
+    if(noClicks>=7){
+
+        no.style.opacity="0";
+        no.style.pointerEvents="none";
+
+        yesScale=1.8;
+
+        yes.style.transform=
+            `scale(${yesScale})`;
+    }
+
+});
+
+
+/* =========================
+   NO qaçması
+========================= */
+
+no.addEventListener("mouseenter",()=>{
+
+    if(noClicks<2) return;
+
+    const x=(Math.random()*200)-100;
+    const y=(Math.random()*150)-75;
+
+    no.style.transform=
+        `translate(${x}px,${y}px) scale(${noScale})`;
+
+});
+
+
+/* =========================
+   YES
+========================= */
+
+yes.addEventListener("click",()=>{
+
+    questionScreen.style.display="none";
+
+    loveScreen.style.display="block";
+
+    createLoveWall();
+
+    createParticles();
+
+    createSparks();
+
+});
+
+
+/* =========================
+   LOVE YOU WALL
+========================= */
+
+function createLoveWall(){
+
+    const wall=
+        document.getElementById("loveWall");
+
+    wall.innerHTML="";
+
+    for(let i=0;i<150;i++){
+
+        const word=
+            document.createElement("div");
+
+        word.className="loveWord";
+
+        word.innerText=
+            Math.random()>.5
+            ? "LOVE YOU"
+            : "LOVE";
+
+        wall.appendChild(word);
+    }
+}
+
+
+/* =========================
+   ÜRƏK / EMOJI YAĞIŞI
+========================= */
+
+function createParticles(){
+
+    const symbols=[
+        "❤️",
+        "💗",
+        "💖",
+        "💕",
+        "✨",
+        "💘",
+        "🩷"
+    ];
+
+    setInterval(()=>{
+
+        const p=
+            document.createElement("div");
+
+        p.className="particle";
+
+        p.innerText=
+            symbols[
+                Math.floor(
+                    Math.random()*symbols.length
+                )
+            ];
+
+        p.style.left=
+            Math.random()*100+"%";
+
+        p.style.fontSize=
+            (15+Math.random()*30)+"px";
+
+        p.style.animationDuration=
+            (3+Math.random()*4)+"s";
+
+        loveScreen.appendChild(p);
+
+        setTimeout(()=>{
+            p.remove();
+        },7000);
+
+    },120);
+
+}
+
+
+/* =========================
+   PARILTILAR
+========================= */
+
+function createSparks(){
+
+    for(let i=0;i<80;i++){
+
+        const s=
+            document.createElement("div");
+
+        s.className="spark";
+
+        s.style.left=
+            Math.random()*100+"%";
+
+        s.style.top=
+            Math.random()*100+"%";
+
+        s.style.animationDelay=
+            Math.random()*2+"s";
+
+        loveScreen.appendChild(s);
+    }
+
+}
+
+</script>
+
 </body>
 </html>
