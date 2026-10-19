@@ -1,597 +1,287 @@
 <!DOCTYPE html>
-<html lang="az">
+<html>
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For You ❤️</title>
+    <title> 爱心代码 </title>
+    <meta charset="utf-8">
+    <meta name="Keywords" content="爱心代码，程序员表白">
+    <meta name="Description" content="爱心代码，HTML文件，何书悦GitHub爱心代码项目">
+    <link rel="shortcut icon" href="../picture/爱心.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--   https://github.com/heshuyue/love-code   -->
+    <style>
+        html,
+        body {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            background: #000;
+        }
 
-<style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
+        canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
 
-body{
-    overflow:hidden;
-    font-family:Arial,sans-serif;
-    background:#050005;
-    color:white;
-}
+        .title {
+            width: 20%;
+            height: 30%;
+            /* 文字居中 */
+            text-align: center;
+            /* 字体大小 */
+            font-size: 30px;
+            /* 背景颜色 */
+            background-color: transparent;
+            /* 文字颜色 */
+            color: rgba(247, 110, 206, 0.829);
+            /* 左右居中 */
+            margin: auto;
+            /* 定位 */
+            position: relative;
+            /* 上边距 */
+            top: 40%;
+            /* 字体 */
+            font-family: "幼圆";
+        }
+    </style>
 
-/* =========================
-   QUESTION SCREEN
-========================= */
-
-#questionScreen{
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:
-        radial-gradient(circle at 50% 45%,#ff1685 0%,#65002f 18%,#170016 55%,#030003 100%);
-}
-
-.questionBox{
-    width:min(90%,600px);
-    text-align:center;
-    padding:50px 25px;
-    position:relative;
-    z-index:10;
-}
-
-.mainHeart{
-    font-size:90px;
-    filter:drop-shadow(0 0 25px #ff1685);
-    animation:pulse 1.2s infinite;
-}
-
-h1{
-    margin-top:20px;
-    font-size:clamp(30px,7vw,55px);
-    text-shadow:
-        0 0 10px white,
-        0 0 25px #ff1685;
-}
-
-.questionText{
-    margin-top:15px;
-    color:#ffd8eb;
-    font-size:19px;
-}
-
-.buttons{
-    margin-top:40px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:20px;
-}
-
-button{
-    border:0;
-    padding:17px 38px;
-    border-radius:50px;
-    font-size:20px;
-    font-weight:bold;
-    cursor:pointer;
-    transition:.25s;
-}
-
-#yes{
-    background:linear-gradient(135deg,#ff2388,#ff006a);
-    color:white;
-    box-shadow:
-        0 0 15px #ff2388,
-        0 0 40px #ff006a;
-}
-
-#no{
-    background:#292129;
-    color:white;
-    border:1px solid #777;
-}
-
-/* =========================
-   LOVE SCREEN
-========================= */
-
-#loveScreen{
-    display:none;
-    position:fixed;
-    inset:0;
-    overflow:hidden;
-    background:#050005;
-}
-
-/* LOVE YOU yazıları arxa planda */
-
-.loveWall{
-    position:absolute;
-    inset:-20%;
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    gap:5px;
-    transform:rotate(-3deg) scale(1.15);
-    opacity:.8;
-}
-
-.loveWord{
-    font-size:24px;
-    font-weight:900;
-    color:#ff0080;
-    text-shadow:
-        0 0 5px #ff0080,
-        0 0 15px #ff0080,
-        0 0 30px #ff0080;
-    animation:flicker 1.5s infinite alternate;
-}
-
-.loveWord:nth-child(3n){
-    animation-delay:.3s;
-}
-
-.loveWord:nth-child(4n){
-    color:#ff4ca5;
-    animation-delay:.7s;
-}
-
-/* mərkəz */
-
-.centerLove{
-    position:absolute;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    text-align:center;
-    z-index:20;
-}
-
-.loveTitle{
-    font-size:clamp(45px,10vw,100px);
-    font-weight:1000;
-    letter-spacing:5px;
-    color:white;
-
-    text-shadow:
-        0 0 5px white,
-        0 0 15px #ff1685,
-        0 0 30px #ff1685,
-        0 0 70px #ff0080;
-
-    animation:loveAppear 1.5s ease;
-}
-
-.bigHeart{
-    margin:20px auto;
-    width:170px;
-    height:150px;
-    position:relative;
-    animation:heartBeat 1s infinite;
-    filter:
-        drop-shadow(0 0 15px white)
-        drop-shadow(0 0 40px #ff1685)
-        drop-shadow(0 0 80px #ff0080);
-}
-
-/* CSS ürək */
-
-.bigHeart:before,
-.bigHeart:after{
-    content:"";
-    position:absolute;
-    top:0;
-    width:90px;
-    height:140px;
-    background:white;
-    border-radius:90px 90px 0 0;
-}
-
-.bigHeart:before{
-    left:80px;
-    transform:rotate(45deg);
-    transform-origin:0 100%;
-}
-
-.bigHeart:after{
-    left:0;
-    transform:rotate(-45deg);
-    transform-origin:100% 100%;
-}
-
-.loveMessage{
-    font-size:22px;
-    color:#fff;
-    text-shadow:0 0 15px #ff1685;
-}
-
-/* =========================
-   PARTICLES
-========================= */
-
-.particle{
-    position:absolute;
-    color:#ff1685;
-    pointer-events:none;
-    animation:fall linear forwards;
-    z-index:5;
-}
-
-.spark{
-    position:absolute;
-    width:4px;
-    height:4px;
-    border-radius:50%;
-    background:white;
-    box-shadow:
-        0 0 8px white,
-        0 0 20px #ff1685;
-    animation:sparkle 1.5s infinite;
-}
-
-/* =========================
-   ANIMATIONS
-========================= */
-
-@keyframes pulse{
-    0%,100%{transform:scale(1)}
-    50%{transform:scale(1.18)}
-}
-
-@keyframes heartBeat{
-    0%,100%{transform:scale(1)}
-    30%{transform:scale(1.12)}
-    60%{transform:scale(.96)}
-}
-
-@keyframes flicker{
-    0%{opacity:.3}
-    50%{opacity:1}
-    100%{opacity:.5}
-}
-
-@keyframes loveAppear{
-    from{
-        opacity:0;
-        transform:scale(.2);
-        filter:blur(20px);
-    }
-    to{
-        opacity:1;
-        transform:scale(1);
-        filter:blur(0);
-    }
-}
-
-@keyframes fall{
-    from{
-        transform:translateY(-50px) rotate(0);
-        opacity:1;
-    }
-    to{
-        transform:translateY(110vh) rotate(360deg);
-        opacity:0;
-    }
-}
-
-@keyframes sparkle{
-    0%,100%{
-        transform:scale(.3);
-        opacity:.2;
-    }
-    50%{
-        transform:scale(1.8);
-        opacity:1;
-    }
-}
-
-/* mobil */
-
-@media(max-width:600px){
-
-    .loveWall{
-        grid-template-columns:repeat(5,1fr);
-    }
-
-    .loveWord{
-        font-size:16px;
-    }
-
-    .bigHeart{
-        width:130px;
-        height:115px;
-    }
-
-    .bigHeart:before,
-    .bigHeart:after{
-        width:70px;
-        height:105px;
-    }
-
-    .buttons{
-        gap:12px;
-    }
-
-    button{
-        padding:14px 28px;
-        font-size:18px;
-    }
-}
-</style>
 </head>
 
 <body>
 
-<!-- =========================
-     SUAL
-========================= -->
 
-<div id="questionScreen">
+    <canvas id="pinkboard"></canvas>
+
+    <div class="title">何未来，我喜欢你</div>
+    <script>
+
+        var settings = {
+            particles: {
+                length: 500,
+                duration: 2,
+                velocity: 100,
+                effect: -0.75,
+                size: 30,
+            },
+        };
+
+
+        (function () { var b = 0; var c = ["ms", "moz", "webkit", "o"]; for (var a = 0; a < c.length && !window.requestAnimationFrame; ++a) { window.requestAnimationFrame = window[c[a] + "RequestAnimationFrame"]; window.cancelAnimationFrame = window[c[a] + "CancelAnimationFrame"] || window[c[a] + "CancelRequestAnimationFrame"] } if (!window.requestAnimationFrame) { window.requestAnimationFrame = function (h, e) { var d = new Date().getTime(); var f = Math.max(0, 16 - (d - b)); var g = window.setTimeout(function () { h(d + f) }, f); b = d + f; return g } } if (!window.cancelAnimationFrame) { window.cancelAnimationFrame = function (d) { clearTimeout(d) } } }());
+
+
+        var Point = (function () {
+            function Point(x, y) {
+                this.x = (typeof x !== 'undefined') ? x : 0;
+                this.y = (typeof y !== 'undefined') ? y : 0;
+            }
+            Point.prototype.clone = function () {
+                return new Point(this.x, this.y);
+            };
+            Point.prototype.length = function (length) {
+                if (typeof length == 'undefined')
+                    return Math.sqrt(this.x * this.x + this.y * this.y);
+                this.normalize();
+                this.x *= length;
+                this.y *= length;
+                return this;
+            };
+            Point.prototype.normalize = function () {
+                var length = this.length();
+                this.x /= length;
+                this.y /= length;
+                return this;
+            };
+            return Point;
+        })();
+
+
+        var Particle = (function () {
+            function Particle() {
+                this.position = new Point();
+                this.velocity = new Point();
+                this.acceleration = new Point();
+                this.age = 0;
+            }
+            Particle.prototype.initialize = function (x, y, dx, dy) {
+                this.position.x = x;
+                this.position.y = y;
+                this.velocity.x = dx;
+                this.velocity.y = dy;
+                this.acceleration.x = dx * settings.particles.effect;
+                this.acceleration.y = dy * settings.particles.effect;
+                this.age = 0;
+            };
+            Particle.prototype.update = function (deltaTime) {
+                this.position.x += this.velocity.x * deltaTime;
+                this.position.y += this.velocity.y * deltaTime;
+                this.velocity.x += this.acceleration.x * deltaTime;
+                this.velocity.y += this.acceleration.y * deltaTime;
+                this.age += deltaTime;
+            };
+            Particle.prototype.draw = function (context, image) {
+                function ease(t) {
+                    return (--t) * t * t + 1;
+                }
+                var size = image.width * ease(this.age / settings.particles.duration);
+                context.globalAlpha = 1 - this.age / settings.particles.duration;
+                context.drawImage(image, this.position.x - size / 2, this.position.y - size / 2, size, size);
+            };
+            return Particle;
+        })();
+
+
+        var ParticlePool = (function () {
+            var particles,
+                firstActive = 0,
+                firstFree = 0,
+                duration = settings.particles.duration;
+
+            function ParticlePool(length) {
+                // create and populate particle pool
+                particles = new Array(length);
+                for (var i = 0; i < particles.length; i++)
+                    particles[i] = new Particle();
+            }
+            ParticlePool.prototype.add = function (x, y, dx, dy) {
+                particles[firstFree].initialize(x, y, dx, dy);
+
+                // handle circular queue
+                firstFree++;
+                if (firstFree == particles.length) firstFree = 0;
+                if (firstActive == firstFree) firstActive++;
+                if (firstActive == particles.length) firstActive = 0;
+            };
+            ParticlePool.prototype.update = function (deltaTime) {
+                var i;
 
-    <div class="questionBox">
+
+                if (firstActive < firstFree) {
+                    for (i = firstActive; i < firstFree; i++)
+                        particles[i].update(deltaTime);
+                }
+                if (firstFree < firstActive) {
+                    for (i = firstActive; i < particles.length; i++)
+                        particles[i].update(deltaTime);
+                    for (i = 0; i < firstFree; i++)
+                        particles[i].update(deltaTime);
+                }
 
-        <div class="mainHeart">❤️</div>
 
-        <h1>Mənimlə sevgili olarsan?</h1>
+                while (particles[firstActive].age >= duration && firstActive != firstFree) {
+                    firstActive++;
+                    if (firstActive == particles.length) firstActive = 0;
+                }
 
-        <div class="questionText" id="questionText">
-            Düzgün cavabı seç... 👀
-        </div>
 
-        <div class="buttons">
+            };
+            ParticlePool.prototype.draw = function (context, image) {
 
-            <button id="yes">
-                YES ❤️
-            </button>
+                if (firstActive < firstFree) {
+                    for (i = firstActive; i < firstFree; i++)
+                        particles[i].draw(context, image);
+                }
+                if (firstFree < firstActive) {
+                    for (i = firstActive; i < particles.length; i++)
+                        particles[i].draw(context, image);
+                    for (i = 0; i < firstFree; i++)
+                        particles[i].draw(context, image);
+                }
+            };
+            return ParticlePool;
+        })();
 
-            <button id="no">
-                NO 😭
-            </button>
 
-        </div>
+        (function (canvas) {
+            var context = canvas.getContext('2d'),
+                particles = new ParticlePool(settings.particles.length),
+                particleRate = settings.particles.length / settings.particles.duration,
+                time;
 
-    </div>
 
-</div>
+            function pointOnHeart(t) {
+                return new Point(
+                    160 * Math.pow(Math.sin(t), 3),
+                    130 * Math.cos(t) - 50 * Math.cos(2 * t) - 20 * Math.cos(3 * t) - 10 * Math.cos(4 * t) + 25
+                );
+            }
 
 
-<!-- =========================
-     FINAL
-========================= -->
+            var image = (function () {
+                var canvas = document.createElement('canvas'),
+                    context = canvas.getContext('2d');
+                canvas.width = settings.particles.size;
+                canvas.height = settings.particles.size;
 
-<div id="loveScreen">
+                function to(t) {
+                    var point = pointOnHeart(t);
+                    point.x = settings.particles.size / 2 + point.x * settings.particles.size / 350;
+                    point.y = settings.particles.size / 2 - point.y * settings.particles.size / 350;
+                    return point;
+                }
 
-    <div class="loveWall" id="loveWall"></div>
+                context.beginPath();
+                var t = -Math.PI;
+                var point = to(t);
+                context.moveTo(point.x, point.y);
+                while (t < Math.PI) {
+                    t += 0.01;
+                    point = to(t);
+                    context.lineTo(point.x, point.y);
+                }
+                context.closePath();
 
-    <div class="centerLove">
+                context.fillStyle = '#ea80b0';
+                context.fill();
 
-        <div class="loveTitle">
-            LOVE YOU
-        </div>
+                var image = new Image();
+                image.src = canvas.toDataURL();
+                return image;
+            })();
 
-        <div class="bigHeart"></div>
 
-        <div class="loveMessage">
-            Səni sevirəm ❤️‍🔥
-        </div>
+            function render() {
 
-    </div>
+                requestAnimationFrame(render);
 
-</div>
 
+                var newTime = new Date().getTime() / 1000,
+                    deltaTime = newTime - (time || newTime);
+                time = newTime;
 
-<script>
 
-const yes = document.getElementById("yes");
-const no = document.getElementById("no");
+                context.clearRect(0, 0, canvas.width, canvas.height);
 
-const questionScreen =
-document.getElementById("questionScreen");
 
-const loveScreen =
-document.getElementById("loveScreen");
+                var amount = particleRate * deltaTime;
+                for (var i = 0; i < amount; i++) {
+                    var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
+                    var dir = pos.clone().length(settings.particles.velocity);
+                    particles.add(canvas.width / 2 + pos.x, canvas.height / 2 - pos.y, dir.x, -dir.y);
+                }
 
-const questionText =
-document.getElementById("questionText");
 
-let yesScale = 1;
-let noScale = 1;
-let noClicks = 0;
+                particles.update(deltaTime);
+                particles.draw(context, image);
+            }
 
 
-/* =========================
-   NO
-========================= */
+            function onResize() {
+                canvas.width = canvas.clientWidth;
+                canvas.height = canvas.clientHeight;
+            }
+            window.onresize = onResize;
 
-no.addEventListener("click",()=>{
 
-    noClicks++;
+            setTimeout(function () {
+                onResize();
+                render();
+            }, 10);
+        })(document.getElementById('pinkboard'));
+    </script>
 
-    yesScale += .18;
 
-    noScale -= .13;
-
-    if(noScale < .25)
-        noScale=.25;
-
-    yes.style.transform=
-        `scale(${yesScale})`;
-
-    no.style.transform=
-        `scale(${noScale})`;
-
-
-    const texts=[
-        "Əminsən? 🥺",
-        "Bir də düşün 😭",
-        "Həqiqətən NO? 😭",
-        "NO getdikcə kiçilir 😂",
-        "YES daha yaxşı seçimdir ❤️",
-        "Artıq qaça bilməzsən 😭",
-        "Son şans... ❤️"
-    ];
-
-    questionText.innerText=
-        texts[Math.min(noClicks-1,texts.length-1)];
-
-
-    if(noClicks>=7){
-
-        no.style.opacity="0";
-        no.style.pointerEvents="none";
-
-        yesScale=1.8;
-
-        yes.style.transform=
-            `scale(${yesScale})`;
-    }
-
-});
-
-
-/* =========================
-   NO qaçması
-========================= */
-
-no.addEventListener("mouseenter",()=>{
-
-    if(noClicks<2) return;
-
-    const x=(Math.random()*200)-100;
-    const y=(Math.random()*150)-75;
-
-    no.style.transform=
-        `translate(${x}px,${y}px) scale(${noScale})`;
-
-});
-
-
-/* =========================
-   YES
-========================= */
-
-yes.addEventListener("click",()=>{
-
-    questionScreen.style.display="none";
-
-    loveScreen.style.display="block";
-
-    createLoveWall();
-
-    createParticles();
-
-    createSparks();
-
-});
-
-
-/* =========================
-   LOVE YOU WALL
-========================= */
-
-function createLoveWall(){
-
-    const wall=
-        document.getElementById("loveWall");
-
-    wall.innerHTML="";
-
-    for(let i=0;i<150;i++){
-
-        const word=
-            document.createElement("div");
-
-        word.className="loveWord";
-
-        word.innerText=
-            Math.random()>.5
-            ? "LOVE YOU"
-            : "LOVE";
-
-        wall.appendChild(word);
-    }
-}
-
-
-/* =========================
-   ÜRƏK / EMOJI YAĞIŞI
-========================= */
-
-function createParticles(){
-
-    const symbols=[
-        "❤️",
-        "💗",
-        "💖",
-        "💕",
-        "✨",
-        "💘",
-        "🩷"
-    ];
-
-    setInterval(()=>{
-
-        const p=
-            document.createElement("div");
-
-        p.className="particle";
-
-        p.innerText=
-            symbols[
-                Math.floor(
-                    Math.random()*symbols.length
-                )
-            ];
-
-        p.style.left=
-            Math.random()*100+"%";
-
-        p.style.fontSize=
-            (15+Math.random()*30)+"px";
-
-        p.style.animationDuration=
-            (3+Math.random()*4)+"s";
-
-        loveScreen.appendChild(p);
-
-        setTimeout(()=>{
-            p.remove();
-        },7000);
-
-    },120);
-
-}
-
-
-/* =========================
-   PARILTILAR
-========================= */
-
-function createSparks(){
-
-    for(let i=0;i<80;i++){
-
-        const s=
-            document.createElement("div");
-
-        s.className="spark";
-
-        s.style.left=
-            Math.random()*100+"%";
-
-        s.style.top=
-            Math.random()*100+"%";
-
-        s.style.animationDelay=
-            Math.random()*2+"s";
-
-        loveScreen.appendChild(s);
-    }
-
-}
-
-</script>
 
 </body>
+
 </html>
